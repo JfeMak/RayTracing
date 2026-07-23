@@ -106,7 +106,8 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 # Executables
-add_executable(inOneWeekend      ${EXTERNAL} ${SOURCE_ONE_WEEKEND})
+add_executable(inOneWeekend      ${SOURCE_ONE_WEEKEND})
+# add_executable(inOneWeekend      ${EXTERNAL} ${SOURCE_ONE_WEEKEND})
 # add_executable(theNextWeek       ${EXTERNAL} ${SOURCE_NEXT_WEEK})
 # add_executable(theRestOfYourLife ${EXTERNAL} ${SOURCE_REST_OF_YOUR_LIFE})
 # add_executable(cos_cubed         src/TheRestOfYourLife/cos_cubed.cc         )
