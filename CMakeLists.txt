@@ -19,8 +19,14 @@ set ( CMAKE_CXX_EXTENSIONS        OFF )
 #   src/external/stb_image.h
 # )
 
-set ( SOURCE_ONE_WEEKEND
-  src/main.cc
+set ( SOURCE 
+    src/main.cc
+    src/color.h
+    src/vec3.h
+)
+
+# set ( SOURCE_ONE_WEEKEND
+#   src/InOneWeekend/main.cc
 #   src/InOneWeekend/camera.h
 #   src/InOneWeekend/color.h
 #   src/InOneWeekend/hittable.h
@@ -31,7 +37,7 @@ set ( SOURCE_ONE_WEEKEND
 #   src/InOneWeekend/rtweekend.h
 #   src/InOneWeekend/sphere.h
 #   src/InOneWeekend/vec3.h
-)
+# )
 
 # set ( SOURCE_NEXT_WEEK
 #   src/TheNextWeek/main.cc
@@ -106,7 +112,7 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 # Executables
-add_executable(inOneWeekend      ${SOURCE_ONE_WEEKEND})
+add_executable(inOneWeekend      ${SOURCE})
 # add_executable(inOneWeekend      ${EXTERNAL} ${SOURCE_ONE_WEEKEND})
 # add_executable(theNextWeek       ${EXTERNAL} ${SOURCE_NEXT_WEEK})
 # add_executable(theRestOfYourLife ${EXTERNAL} ${SOURCE_REST_OF_YOUR_LIFE})
