@@ -4,7 +4,50 @@
 
 #include <iostream>
 
+/*
+Conventions
+
++ x-axis = right
++ y-axis = up
++ z-axis = away
+*/
+
+bool hit_sphere(const point3& center, double radius, const ray& r) {
+    /*
+    Sphere defined as (C_x − x)^2 + (C_y − y)^2 + (C^z − z)^2 = r^2
+    Define point P, center C
+    dot(C - P, C - P) = (C_x − x)^2 + (C_y − y)^2 + (C^z − z)^2 = r^2
+
+    Want to know if ray Q + td hits sphere
+    dot(C - (Q + td), C - (Q + td)) = r^2
+    dot(-td + (C - Q), -td + (C - Q)) = r^2
+
+    Dot prod rules
+    t^2 dot(d, d) - 2t dot(d, C - Q) + dot(C - Q, C - Q) - r^2 = 0
+
+    Quad Formula
+    a = dot(d, d)
+    b = -2 dot(d, C - Q)
+    c = dot(C - Q, C - Q) - r^2
+    oc = C - Q for convenience
+
+    0 roots = no intersection, 1 root = tangent, 2 roots = non-tangent intersection
+    */
+    vec3 oc = center - r.origin();
+    auto a = dot(r.direction(), r.direction());
+    auto b = -2.0 * dot(r.direction(), oc);
+    auto c = dot(oc, oc) - radius * radius;
+    auto discriminant = b * b - 4 * a * c;
+    return (discriminant >= 0);
+}
+
 color ray_color(const ray& r) {
+    // Intersection
+    if (hit_sphere(point3(0, 0, -1), 0.5, r)) {
+        return color(1, 0, 0);
+    }
+
+    // Background
     vec3 unit_direction = unit_vector(r.direction());
     auto a = 0.5*(unit_direction.y() + 1.0);
     return (1.0-a)*color(1.0, 1.0, 1.0) + a*color(0.5, 0.7, 1.0);
