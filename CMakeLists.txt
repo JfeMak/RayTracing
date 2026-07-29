@@ -21,8 +21,14 @@ set ( CMAKE_CXX_EXTENSIONS        OFF )
 
 set ( SOURCE 
     src/main.cc
+    src/camera.h
     src/color.h
+    src/hittable.h
+    src/hittable_list.h
+    src/interval.h
     src/ray.h
+    src/rtweekend.h
+    src/sphere.h
     src/vec3.h
 )
 
