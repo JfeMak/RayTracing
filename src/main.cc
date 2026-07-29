@@ -1,8 +1,12 @@
-#include "color.h"
-#include "ray.h"
-#include "vec3.h"
+#include "rtweekend.h"
 
-#include <iostream>
+#include "color.h"
+#include "interval.h"
+#include "hittable.h"
+#include "hittable_list.h"
+#include "ray.h"
+#include "sphere.h"
+#include "vec3.h"
 
 /*
 Conventions
@@ -10,47 +14,21 @@ Conventions
 + x-axis = right
 + y-axis = up
 + z-axis = away
+
+Inside ray = normal goes inwards, Outside ray = normal goes outwards
 */
 
-bool hit_sphere(const point3& center, double radius, const ray& r) {
-    /*
-    Sphere defined as (C_x − x)^2 + (C_y − y)^2 + (C^z − z)^2 = r^2
-    Define point P, center C
-    dot(C - P, C - P) = (C_x − x)^2 + (C_y − y)^2 + (C^z − z)^2 = r^2
-
-    Want to know if ray Q + td hits sphere
-    dot(C - (Q + td), C - (Q + td)) = r^2
-    dot(-td + (C - Q), -td + (C - Q)) = r^2
-
-    Dot prod rules
-    t^2 dot(d, d) - 2t dot(d, C - Q) + dot(C - Q, C - Q) - r^2 = 0
-
-    Quad Formula
-    a = dot(d, d)
-    b = -2 dot(d, C - Q)
-    c = dot(C - Q, C - Q) - r^2
-    oc = C - Q for convenience
-
-    0 roots = no intersection, 1 root = tangent, 2 roots = non-tangent intersection
-    */
-    vec3 oc = center - r.origin();
-    auto a = dot(r.direction(), r.direction());
-    auto b = -2.0 * dot(r.direction(), oc);
-    auto c = dot(oc, oc) - radius * radius;
-    auto discriminant = b * b - 4 * a * c;
-    return (discriminant >= 0);
-}
-
-color ray_color(const ray& r) {
+color ray_color(const ray& r, const hittable& world) {
     // Intersection
-    if (hit_sphere(point3(0, 0, -1), 0.5, r)) {
-        return color(1, 0, 0);
+    hit_record rec;
+    if (world.hit(r, interval(0, infinity), rec)) {
+        return 0.5 * (rec.normal + color(1, 1, 1));
     }
 
     // Background
     vec3 unit_direction = unit_vector(r.direction());
-    auto a = 0.5*(unit_direction.y() + 1.0);
-    return (1.0-a)*color(1.0, 1.0, 1.0) + a*color(0.5, 0.7, 1.0);
+    auto a = 0.5 * (unit_direction.y() + 1.0);
+    return (1.0 - a) * color(1.0, 1.0, 1.0) + a * color(0.5, 0.7, 1.0);
 }
 
 int main() {
@@ -62,6 +40,13 @@ int main() {
     // Calculate the image height, and ensure that it's at least 1.
     int image_height = int(image_width / aspect_ratio);
     image_height = (image_height < 1) ? 1 : image_height;
+
+    // World
+
+    hittable_list world;
+
+    world.add(make_shared<sphere>(point3(0,0,-1), 0.5));
+    world.add(make_shared<sphere>(point3(0,-100.5,-1), 100));
 
     // Camera
 
@@ -93,7 +78,7 @@ int main() {
             auto ray_direction = pixel_center - camera_center;
             ray r(camera_center, ray_direction);
 
-            color pixel_color = ray_color(r);
+            color pixel_color = ray_color(r, world);
             write_color(std::cout, pixel_color);
         }
     }
