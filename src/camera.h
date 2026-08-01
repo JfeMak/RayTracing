@@ -3,6 +3,7 @@
 
 #include "color.h"
 #include "hittable.h"
+#include "material.h"
 
 class camera {
     public:
@@ -95,14 +96,16 @@ class camera {
             // Ray's origin can end up slightly under surface, causing new intersection at t=small number -> shadow acne
             if (world.hit(r, interval(0.001, infinity), rec)) {
                 // For each bounce, color gets darker
-                // Color = gamma ^ (# of bounces) * (color of sky)
-
-                // Non-uniform Lambertian distribution (more likely to scatter in surface normal's direction)
-                // OLD: random_on_hemisphere function
-                vec3 direction = rec.normal + random_unit_vector();
-
-                // Gamma set to 0.5
-                return 0.5 * ray_color(ray(rec.p, direction), depth - 1, world);
+                // Color = attenuation ^ (# of bounces) * (color of sky)
+                // Albedo: Material's property
+                // Attenuation: Ray's energy multiplier
+                // Attenuation and p (probability of bouncing) must maintain the albedo (Average light reflected)
+                ray scattered;
+                color attenuation;
+                if (rec.mat->scatter(r, rec, attenuation, scattered)) {
+                    return attenuation * ray_color(scattered, depth - 1, world);
+                }
+                return color(0, 0, 0);
             }
 
             // Background
