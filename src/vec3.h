@@ -137,4 +137,60 @@ inline vec3 reflect(const vec3& v, const vec3& n) {
     return v - 2 * dot(v, n) * n;
 }
 
+/**
+ * Proof using Snell's Law:
+ * 
+ * - R  : Incoming ray unit vector (pointing into the hit surface)
+ * - n  : Surface normal unit vector (pointing out of the surface toward R)
+ * - R' : Refracted ray unit vector (pointing into the second medium)
+ * - theta  : Incident angle between -R and n  => cos(theta) = -R . n
+ * - theta' : Refracted angle between -R' and n => cos(theta') = -R' . n
+ * - eta, eta' : Refractive indices for medium 1 (incident) and medium 2 (refracted)
+ * 
+ * * We decompose the refracted ray R' into perpendicular and parallel components:
+ * R' = R'_perp + R'_parallel
+ * 
+ * R'_perp
+ * 1. Decompose incoming unit ray R relative to normal n:
+ * R = R_parallel + R_perp
+ * * 2. Express R_parallel (points in direction of -n with magnitude cos(theta)):
+ * R_parallel = -cos(theta) * n
+ * * 3. Isolate R_perp:
+ * R_perp = R - R_parallel
+ * R_perp = R - (-cos(theta) * n)
+ * R_perp = R + cos(theta) * n
+ * * 4. Find the magnitude of R_perp (from right-triangle geometry, |R| = 1):
+ * |R_perp| = sin(theta)
+ * * 5. Define horizontal unit vector u_hat along the surface boundary:
+ * u_hat = R_perp / |R_perp|
+ * u_hat = R_perp / sin(theta)
+ * * 6. Express R'_perp using its magnitude sin(theta') and direction u_hat:
+ * R'_perp = sin(theta') * u_hat
+ * R'_perp = sin(theta') * (R_perp / sin(theta))
+ * R'_perp = (sin(theta') / sin(theta)) * R_perp
+ * * 7. Rearrange Snell's Law (eta * sin(theta) = eta' * sin(theta')):
+ * sin(theta') / sin(theta) = eta / eta'
+ * * 8. Substitute the Snell ratio and R_perp (from step 3) into R'_perp:
+ * R'_perp = (eta / eta') * (R + cos(theta) * n)
+ * 
+ * R'_parallel:
+ * 1. Since R' is a unit vector (|R'| = 1), use the Pythagorean theorem:
+ * |R'|^2 = |R'_perp|^2 + |R'_parallel|^2 = 1
+ * * 2. Isolate magnitude |R'_parallel|:
+ * |R'_parallel|^2 = 1 - |R'_perp|^2
+ * |R'_parallel|   = sqrt(1 - |R'_perp|^2)
+ * * 3. Direction of R'_parallel goes down into the second medium (-n):
+ * R'_parallel = -sqrt(1 - |R'_perp|^2) * n
+ * 
+ * Result:
+ * R' = R'_perp + R'_parallel
+ * R' = (eta / eta') * (R + cos(theta) * n) - sqrt(1 - |R'_perp|^2) * n
+ */
+inline vec3 refract(const vec3& uv, const vec3& n, double etai_over_etat) {
+    auto cos_theta = std::fmin(dot(-uv, n), 1.0);
+    vec3 r_out_perp = etai_over_etat * (uv + cos_theta * n);
+    vec3 r_out_parallel = -std::sqrt(std::fabs(1.0 - r_out_perp.length_squared())) * n;
+    return r_out_perp + r_out_parallel;
+}
+
 #endif
