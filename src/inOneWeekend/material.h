@@ -27,7 +27,7 @@ class lambertian : public material {
                 scatter_direction = rec.normal;
             }
 
-            scattered = ray(rec.p, scatter_direction, r_in.time());
+            scattered = ray(rec.p, scatter_direction);
             attenuation = albedo;
             return true;
         }
@@ -44,7 +44,7 @@ class metal : public material {
 
             // Fuzz sphere only makes sense if it's scaled compared to the reflection vector -> normalize reflected ray
             reflected = unit_vector(reflected) + (fuzz * random_unit_vector());
-            scattered = ray(rec.p, reflected, r_in.time());
+            scattered = ray(rec.p, reflected);
             attenuation = albedo;
 
             // For big spheres (large fuzz values), we might scatter below the surface -> absorb
@@ -81,7 +81,7 @@ class dielectric : public material {
             else
                 direction = refract(unit_direction, rec.normal, ri);
 
-            scattered = ray(rec.p, direction, r_in.time());
+            scattered = ray(rec.p, direction);
             return true;
         }
 

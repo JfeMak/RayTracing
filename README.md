@@ -4,14 +4,14 @@
 ```shell
 $ cmake -B build
 $ cmake --build build --config Release
-$ build\Release\inOneWeekend.exe > image.ppm
+$ build\Release\rayTracing.exe > image.ppm
 ```
 
 **Mac:**
 ```shell
 $ cmake -B build/Release -DCMAKE_BUILD_TYPE=Release
 $ cmake --build build/Release
-$ build/Release/inOneWeekend > image.ppm
+$ build/Release/rayTracing > image.ppm
 ```
 
 ## Acknowledgements & Credits
