@@ -15,9 +15,9 @@ set ( CMAKE_CXX_EXTENSIONS        OFF )
 
 # Source
 
-# set ( EXTERNAL
-#   src/external/stb_image.h
-# )
+set ( EXTERNAL
+  src/external/stb_image.h
+)
 
 set ( SOURCE 
     src/main.cc
@@ -28,8 +28,10 @@ set ( SOURCE
     src/interval.h
     src/material.h
     src/ray.h
+    src/rtw_stb_image.h
     src/rtweekend.h
     src/sphere.h
+    src/texture.h
     src/vec3.h
 )
 
@@ -120,7 +122,7 @@ elseif (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 # Executables
-add_executable(rayTracing      ${SOURCE})
+add_executable(rayTracing      ${EXTERNAL} ${SOURCE})
 # add_executable(inOneWeekend      ${EXTERNAL} ${SOURCE_ONE_WEEKEND})
 # add_executable(theNextWeek       ${EXTERNAL} ${SOURCE_NEXT_WEEK})
 # add_executable(theRestOfYourLife ${EXTERNAL} ${SOURCE_REST_OF_YOUR_LIFE})
