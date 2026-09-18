@@ -55,7 +55,7 @@ class vec3 {
     }
 
     static vec3 random(double min, double max) {
-        return vec3(random_double(min,max), random_double(min,max), random_double(min,max));
+        return vec3(random_double(min, max), random_double(min, max), random_double(min, max));
     }
 };
 
