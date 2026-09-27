@@ -21,12 +21,15 @@ set ( EXTERNAL
 
 set ( SOURCE 
     src/main.cc
+    src/aabb.h
+    src/bvh.h
     src/camera.h
     src/color.h
     src/hittable.h
     src/hittable_list.h
     src/interval.h
     src/material.h
+    src/perlin.h
     src/ray.h
     src/rtw_stb_image.h
     src/rtweekend.h
